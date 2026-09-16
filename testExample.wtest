@@ -1,9 +1,40 @@
-import example.pepita
+import example.*
 
-describe "group of tests for pepita" {
-
-  test "pepita has initial energy" {
-    assert.equals(100, pepita.energy())
+describe "Test de prueba de inscripciones a materias"{
+  test "2 materias aprobadas de roque"{
+    roque.registrarAprobacion(objetos1, 9)
+    roque.registrarAprobacion(matematica1, 7)
+    assert.equals(2, roque.materiasAprobadas().size())
   }
-
+  test "Misma materia aprobada de roque"{
+    roque.registrarAprobacion(objetos1, 9)
+    
+    assert.throwsException({roque.registrarAprobacion(objetos1, 7)})
+  }
+  test "roque tiene materias aprobadas"{
+    roque.registrarAprobacion(objetos1, 9)
+    assert.that(roque.tieneAprobado(objetos1))
+  }
+  test "roque no tiene materias aprobadas"{
+    assert.notThat(roque.tieneAprobado(objetos1))
+  }
+  test "cantidad de materias aprobadas de roque"{
+    roque.registrarAprobacion(objetos1, 9)
+    roque.registrarAprobacion(objetos2, 8)
+    roque.registrarAprobacion(objetos3, 8)
+    roque.registrarAprobacion(matematica1, 7)
+    roque.registrarAprobacion(elementosDeProgramacion, 10)
+    assert.equals(5, roque.cantidadMateriasAprobadas())
+  }
+  test "promedio de las materias aprobadas de roque"{
+    roque.registrarAprobacion(objetos1, 9)
+    roque.registrarAprobacion(objetos2, 8)
+    roque.registrarAprobacion(objetos3, 8)
+    roque.registrarAprobacion(matematica1, 7)
+    roque.registrarAprobacion(elementosDeProgramacion, 10)
+    assert.equals(8.4, roque.promedio())
+  }
+  test "excepción de roque al no tener matericas aprobadas"{
+    assert.throwsException({roque.promedio()})
+  }
 }
