@@ -1,6 +1,8 @@
 import example.*
 
-describe "Test de prueba de inscripciones a materias"{
+//TESTS MÍOS PROBANDO CADA EJERCICIO HECHO
+
+describe "Test de pruebas mios probando cada ejercicio"{
   method initialize(){
     basesDeDatos.requisitos().add(matematica1)
     objetos2.requisitos().add(matematica1)
@@ -55,7 +57,7 @@ describe "Test de prueba de inscripciones a materias"{
   test "materias de roque a la que está inscripto"{
     roque.inscribirCarrera(programacion)
     roque.inscribirCarrera(medicina)
-    assert.equals([elementosDeProgramacion ,matematica1, objetos1 ,objetos2 ,objetos3 ,trabajoFinal, basesDeDatos, quimica ,biologia1, biologia2, anatomiaGeneral], roque.materias())
+    assert.equals([elementosDeProgramacion ,matematica1, objetos1 ,objetos2 ,objetos3 ,trabajoFinal, basesDeDatos, programacionConcurrente, quimica ,biologia1, biologia2, anatomiaGeneral], roque.materias())
   }
   test "inscribir a materia de otra carrera"{
     roque.inscribirCarrera(programacion)
@@ -96,5 +98,110 @@ describe "Test de prueba de inscripciones a materias"{
     daniela.inscribirMateria(objetos1)
     objetos1.bajaEstudiante(roque)
     assert.equals(#{daniela}, objetos1.estudiantes())
+  }
+  test "materias en espera para daniela"{
+    roque.inscribirCarrera(programacion)
+    daniela.inscribirCarrera(programacion)
+    roque.inscribirMateria(objetos1)
+    daniela.inscribirMateria(objetos1)
+    assert.equals([daniela], objetos1.estudiantesEnEspera())
+  }
+  test "prueba de roque de excepción a carrera inscripta"{
+    roque.inscribirCarrera(programacion)
+    assert.throwsException({roque.materiasConCupos(medicina)})
+  }
+  test "materias con cupos para roque sin objetos 1, ni matemática 1"{
+    roque.inscribirCarrera(programacion)
+    daniela.inscribirCarrera(programacion)
+    daniela.inscribirMateria(objetos1)
+    daniela.inscribirMateria(matematica1)
+    assert.equals(#{elementosDeProgramacion, objetos2 ,objetos3 ,trabajoFinal, basesDeDatos, programacionConcurrente}, roque.materiasConCupos(programacion))
+  }
+}
+
+
+
+
+
+
+
+
+//TESTS SOLICITADOS DEL README DE EJERCICIOS INSCRIPCIÓN A MATERIAS
+describe "tests solicitados en los enunciados del readme de inscripcion a materias"{
+  method initialize(){
+    objetos2.requisitos().add(matematica1)
+    objetos2.requisitos().add(objetos1)
+
+    objetos3.requisitos().add(objetos2)
+    objetos3.requisitos().add(basesDeDatos)
+    
+    programacionConcurrente.requisitos().add(objetos1)
+    programacionConcurrente.requisitos().add(basesDeDatos)
+
+    biologia2.requisitos().add(biologia1)
+
+    roque.inscribirCarrera(programacion)
+    roque.inscribirCarrera(medicina)
+    luisa.inscribirCarrera(programacion)
+    romina.inscribirCarrera(programacion)
+    alicia.inscribirCarrera(programacion)
+    ana.inscribirCarrera(programacion)
+
+    roque.registrarAprobacion(elementosDeProgramacion, 7)
+    roque.registrarAprobacion(matematica1, 9)            
+    roque.registrarAprobacion(objetos1, 10)               
+    roque.registrarAprobacion(basesDeDatos, 7)
+    roque.registrarAprobacion(quimica, 9)
+    roque.registrarAprobacion(biologia1, 7)
+
+    luisa.registrarAprobacion(elementosDeProgramacion, 7)
+    luisa.registrarAprobacion(matematica1, 9)
+    luisa.registrarAprobacion(objetos1, 10)
+
+    romina.registrarAprobacion(elementosDeProgramacion, 7)
+    romina.registrarAprobacion(matematica1, 9)            
+    romina.registrarAprobacion(objetos1, 10)
+
+    alicia.registrarAprobacion(elementosDeProgramacion, 7)
+    alicia.registrarAprobacion(matematica1, 9)            
+    alicia.registrarAprobacion(objetos1, 10)
+
+    ana.registrarAprobacion(elementosDeProgramacion, 9)      
+  }
+  test "Inscripcion de roque en objetos 2"{
+    roque.inscribirMateria(objetos2)
+    assert.that(roque.materiasInscripto().contains(objetos2))
+  }
+  test "inscripción de roque en objetos 3 sin tener aprobada objetos 2"{
+    assert.throwsException({roque.inscribirMateria(objetos3)})
+  }
+  test "inscripcion de roque en objetos 1 ya teniéndola aprobada"{
+    assert.throwsException({roque.inscribirMateria(objetos1)})
+  }
+  
+  test "materias que puede inscribirse roque"{
+    roque.inscribirMateria(objetos2)
+    roque.inscribirMateria(programacionConcurrente)
+    roque.inscribirMateria(biologia2)
+    assert.that(roque.materiasInscripto().contains(objetos2))
+    assert.that(roque.materiasInscripto().contains(programacionConcurrente))
+    assert.that(roque.materiasInscripto().contains(biologia2))
+  }
+  
+  test "Roque en lista de espera en objetos 2"{
+    luisa.inscribirMateria(objetos2)
+    romina.inscribirMateria(objetos2)
+    alicia.inscribirMateria(objetos2)
+    roque.inscribirMateria(objetos2)
+    assert.equals(#{luisa, romina, alicia}, objetos2.estudiantes())
+    assert.that(objetos2.estudiantesEnEspera().contains(roque))
+  }
+  test "Roque pasa de la lista de espera a inscripción confirmada en objetos 2 luego de que romina se dé de baja"{
+    luisa.inscribirMateria(objetos2)
+    romina.inscribirMateria(objetos2)
+    alicia.inscribirMateria(objetos2)
+    roque.inscribirMateria(objetos2)
+    objetos2.bajaEstudiante(romina)
+    assert.equals(#{luisa, alicia, roque}, objetos2.estudiantes())
   }
 }
