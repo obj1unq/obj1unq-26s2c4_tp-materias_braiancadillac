@@ -1,6 +1,21 @@
 import example.*
 
 describe "Test de prueba de inscripciones a materias"{
+  method initialize(){
+    basesDeDatos.requisitos().add(matematica1)
+    objetos2.requisitos().add(matematica1)
+    objetos2.requisitos().add(objetos1)
+    objetos2.requisitos().add(elementosDeProgramacion)
+    objetos3.requisitos().add(objetos1)
+    objetos3.requisitos().add(objetos2)
+    objetos3.requisitos().add(matematica1)
+    objetos3.requisitos().add(elementosDeProgramacion)
+    trabajoFinal.requisitos().add(objetos1)
+    trabajoFinal.requisitos().add(objetos2)
+    trabajoFinal.requisitos().add(objetos3)
+    trabajoFinal.requisitos().add(matematica1)
+    trabajoFinal.requisitos().add(elementosDeProgramacion)
+  }
   test "2 materias aprobadas de roque"{
     roque.registrarAprobacion(objetos1, 9)
     roque.registrarAprobacion(matematica1, 7)
@@ -36,5 +51,50 @@ describe "Test de prueba de inscripciones a materias"{
   }
   test "excepción de roque al no tener matericas aprobadas"{
     assert.throwsException({roque.promedio()})
+  }
+  test "materias de roque a la que está inscripto"{
+    roque.inscribirCarrera(programacion)
+    roque.inscribirCarrera(medicina)
+    assert.equals([elementosDeProgramacion ,matematica1, objetos1 ,objetos2 ,objetos3 ,trabajoFinal, basesDeDatos, quimica ,biologia1, biologia2, anatomiaGeneral], roque.materias())
+  }
+  test "inscribir a materia de otra carrera"{
+    roque.inscribirCarrera(programacion)
+    assert.throwsException({roque.validarMateriaEnCarrera(quimica)})
+  }
+  test "inscribir a materia ya aprobada"{
+    roque.inscribirCarrera(programacion)
+    roque.registrarAprobacion(objetos1, 9)
+    assert.throwsException({roque.validarAprobacion()})
+  }
+  test "inscribir a materia ya inscripto"{
+    roque.inscribirCarrera(programacion)
+    roque.inscribirMateria(objetos1)
+    assert.throwsException({roque.validarMateriaEnMateriasInscripto(objetos1)})
+  }
+  test "inscribir a materia con requisitos"{
+    roque.inscribirCarrera(programacion)
+    assert.throwsException({roque.inscribirMateria(basesDeDatos)})
+  }
+  test "inscribir a materia"{
+    roque.inscribirCarrera(programacion)
+    roque.inscribirMateria(matematica1)
+    roque.registrarAprobacion(matematica1, 7)
+    roque.inscribirMateria(basesDeDatos)
+    assert.that(roque.materiasInscripto().contains(basesDeDatos))
+  }
+  test "inscribir a daniela en lista de espera de objetos 1"{
+    roque.inscribirCarrera(programacion)
+    daniela.inscribirCarrera(programacion)
+    roque.inscribirMateria(objetos1)
+    daniela.inscribirMateria(objetos1)
+    assert.equals([daniela], objetos1.estudiantesEnEspera())
+  }
+  test "dar de baja a roque y pasar a daniela de la lista de espera a darle un cupo"{
+    roque.inscribirCarrera(programacion)
+    daniela.inscribirCarrera(programacion)
+    roque.inscribirMateria(objetos1)
+    daniela.inscribirMateria(objetos1)
+    objetos1.bajaEstudiante(roque)
+    assert.equals(#{daniela}, objetos1.estudiantes())
   }
 }
