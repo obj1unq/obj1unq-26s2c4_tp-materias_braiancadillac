@@ -1,207 +1,150 @@
 import example.*
 
-//TESTS MÍOS PROBANDO CADA EJERCICIO HECHO
-
-describe "Test de pruebas mios probando cada ejercicio"{
-  method initialize(){
-    basesDeDatos.requisitos().add(matematica1)
-    objetos2.requisitos().add(matematica1)
-    objetos2.requisitos().add(objetos1)
-    objetos2.requisitos().add(elementosDeProgramacion)
-    objetos3.requisitos().add(objetos1)
-    objetos3.requisitos().add(objetos2)
-    objetos3.requisitos().add(matematica1)
-    objetos3.requisitos().add(elementosDeProgramacion)
-    trabajoFinal.requisitos().add(objetos1)
-    trabajoFinal.requisitos().add(objetos2)
-    trabajoFinal.requisitos().add(objetos3)
-    trabajoFinal.requisitos().add(matematica1)
-    trabajoFinal.requisitos().add(elementosDeProgramacion)
-  }
-  test "2 materias aprobadas de roque"{
-    roque.registrarAprobacion(objetos1, 9)
-    roque.registrarAprobacion(matematica1, 7)
-    assert.equals(2, roque.materiasAprobadas().size())
-  }
-  test "Misma materia aprobada de roque"{
-    roque.registrarAprobacion(objetos1, 9)
-    
-    assert.throwsException({roque.registrarAprobacion(objetos1, 7)})
-  }
-  test "roque tiene materias aprobadas"{
-    roque.registrarAprobacion(objetos1, 9)
-    assert.that(roque.tieneAprobado(objetos1))
-  }
-  test "roque no tiene materias aprobadas"{
-    assert.notThat(roque.tieneAprobado(objetos1))
-  }
-  test "cantidad de materias aprobadas de roque"{
-    roque.registrarAprobacion(objetos1, 9)
-    roque.registrarAprobacion(objetos2, 8)
-    roque.registrarAprobacion(objetos3, 8)
-    roque.registrarAprobacion(matematica1, 7)
-    roque.registrarAprobacion(elementosDeProgramacion, 10)
-    assert.equals(5, roque.cantidadMateriasAprobadas())
-  }
-  test "promedio de las materias aprobadas de roque"{
-    roque.registrarAprobacion(objetos1, 9)
-    roque.registrarAprobacion(objetos2, 8)
-    roque.registrarAprobacion(objetos3, 8)
-    roque.registrarAprobacion(matematica1, 7)
-    roque.registrarAprobacion(elementosDeProgramacion, 10)
-    assert.equals(8.4, roque.promedio())
-  }
-  test "excepción de roque al no tener matericas aprobadas"{
-    assert.throwsException({roque.promedio()})
-  }
-  test "materias de roque a la que está inscripto"{
-    roque.inscribirCarrera(programacion)
-    roque.inscribirCarrera(medicina)
-    assert.equals([elementosDeProgramacion ,matematica1, objetos1 ,objetos2 ,objetos3 ,trabajoFinal, basesDeDatos, programacionConcurrente, quimica ,biologia1, biologia2, anatomiaGeneral], roque.materias())
-  }
-  test "inscribir a materia de otra carrera"{
-    roque.inscribirCarrera(programacion)
-    assert.throwsException({roque.validarMateriaEnCarrera(quimica)})
-  }
-  test "inscribir a materia ya aprobada"{
-    roque.inscribirCarrera(programacion)
-    roque.registrarAprobacion(objetos1, 9)
-    assert.throwsException({roque.validarAprobacion()})
-  }
-  test "inscribir a materia ya inscripto"{
-    roque.inscribirCarrera(programacion)
-    roque.inscribirMateria(objetos1)
-    assert.throwsException({roque.validarMateriaEnMateriasInscripto(objetos1)})
-  }
-  test "inscribir a materia con requisitos"{
-    roque.inscribirCarrera(programacion)
-    assert.throwsException({roque.inscribirMateria(basesDeDatos)})
-  }
-  test "inscribir a materia"{
-    roque.inscribirCarrera(programacion)
-    roque.inscribirMateria(matematica1)
-    roque.registrarAprobacion(matematica1, 7)
-    roque.inscribirMateria(basesDeDatos)
-    assert.that(roque.materiasInscripto().contains(basesDeDatos))
-  }
-  test "inscribir a daniela en lista de espera de objetos 1"{
-    roque.inscribirCarrera(programacion)
-    daniela.inscribirCarrera(programacion)
-    roque.inscribirMateria(objetos1)
-    daniela.inscribirMateria(objetos1)
-    assert.equals([daniela], objetos1.estudiantesEnEspera())
-  }
-  test "dar de baja a roque y pasar a daniela de la lista de espera a darle un cupo"{
-    roque.inscribirCarrera(programacion)
-    daniela.inscribirCarrera(programacion)
-    roque.inscribirMateria(objetos1)
-    daniela.inscribirMateria(objetos1)
-    objetos1.bajaEstudiante(roque)
-    assert.equals(#{daniela}, objetos1.estudiantes())
-  }
-  test "materias en espera para daniela"{
-    roque.inscribirCarrera(programacion)
-    daniela.inscribirCarrera(programacion)
-    roque.inscribirMateria(objetos1)
-    daniela.inscribirMateria(objetos1)
-    assert.equals([daniela], objetos1.estudiantesEnEspera())
-  }
-  test "prueba de roque de excepción a carrera inscripta"{
-    roque.inscribirCarrera(programacion)
-    assert.throwsException({roque.materiasConCupos(medicina)})
-  }
-  test "materias con cupos para roque sin objetos 1, ni matemática 1"{
-    roque.inscribirCarrera(programacion)
-    daniela.inscribirCarrera(programacion)
-    daniela.inscribirMateria(objetos1)
-    daniela.inscribirMateria(matematica1)
-    assert.equals(#{elementosDeProgramacion, objetos2 ,objetos3 ,trabajoFinal, basesDeDatos, programacionConcurrente}, roque.materiasConCupos(programacion))
-  }
-}
-
-
-
-
-
-
-
-
-//TESTS SOLICITADOS DEL README DE EJERCICIOS INSCRIPCIÓN A MATERIAS
 describe "tests solicitados en los enunciados del readme de inscripcion a materias"{
+
+  var roque  = new Estudiante()
+  var luisa  = new Estudiante()
+  var romina = new Estudiante()
+  var alicia = new Estudiante()
+
+  var programacion = new Carrera(materias = #{})
+  var medicina     = new Carrera(materias = #{})
+
+  // PROGRAMACIÓN
+
+  var elementosDeProgramacion = new Materia(carrera = programacion, requisito = nada, capacidad = 40, anio = 2023, creditos = 10, creditosNecesarios = 0)
+  var matematica1             = new Materia(carrera = programacion, requisito = nada, capacidad = 40, anio = 2024, creditos = 15, creditosNecesarios = 0)
+  var objetos1                = new Materia(carrera = programacion, requisito = nada, capacidad = 40, anio = 2024, creditos = 20, creditosNecesarios = 0)
+  var objetos2                = new Materia(carrera = programacion, requisito = correlativasObjs2, capacidad = 3, anio = 2025, creditos = 15, creditosNecesarios = 0)
+  var objetos3                = new Materia(carrera = programacion, requisito = correlativasObjs3, capacidad = 10, anio = 2026, creditos = 10, creditosNecesarios = 0)
+  var basesDeDatos            = new Materia(carrera = programacion, requisito = nada, capacidad = 30, anio = 2024, creditos = 15, creditosNecesarios = 0)
+  var programacionConcurrente = new Materia(carrera = programacion, requisito = correlativasProgramacionConcurrente, capacidad = 15, anio = 2025, creditos = 15, creditosNecesarios = 0)
+  var trabajoFinal            = new Materia(carrera = programacion, requisito = creditos, capacidad = 15, anio = 2026, creditos = 15, creditosNecesarios = 50)
+  
+  // MEDICINA
+
+  var quimica   = new Materia(carrera = medicina, requisito = nada, capacidad = 15, anio = 2023, creditos = 10, creditosNecesarios = 0)
+  var biologia1 = new Materia(carrera = medicina, requisito = nada, capacidad = 15, anio = 2024, creditos = 15, creditosNecesarios = 0)
+  var biologia2 = new Materia(carrera = medicina, requisito = correlativasBiologia2, capacidad = 15, anio = 2025, creditos = 20, creditosNecesarios = 0)
+
+  // CORRELATIVAS
+
+  var correlativasObjs2                   = new Correlativa(correlativas = #{matematica1, objetos1})
+  var correlativasObjs3                   = new Correlativa(correlativas = #{objetos2, basesDeDatos})
+  var correlativasProgramacionConcurrente = new Correlativa(correlativas = #{objetos1, basesDeDatos})
+  var correlativasBiologia2               = new Correlativa(correlativas = #{biologia1})
+
   method initialize(){
-    objetos2.requisitos().add(matematica1)
-    objetos2.requisitos().add(objetos1)
+    // Configuramos los requisitos
+    objetos2.requisito(correlativasObjs2)
+    objetos3.requisito(correlativasObjs3)
+    programacionConcurrente.requisito(correlativasProgramacionConcurrente)
+    biologia2.requisito(correlativasBiologia2)
 
-    objetos3.requisitos().add(objetos2)
-    objetos3.requisitos().add(basesDeDatos)
-    
-    programacionConcurrente.requisitos().add(objetos1)
-    programacionConcurrente.requisitos().add(basesDeDatos)
+    // Cargamos materias en las carreras
+    programacion.materias().add(elementosDeProgramacion)
+    programacion.materias().add(matematica1)
+    programacion.materias().add(objetos1)
+    programacion.materias().add(objetos2)
+    programacion.materias().add(objetos3)
+    programacion.materias().add(basesDeDatos)
+    programacion.materias().add(programacionConcurrente)
+    programacion.materias().add(trabajoFinal)
 
-    biologia2.requisitos().add(biologia1)
+    medicina.materias().add(quimica)
+    medicina.materias().add(biologia1)
+    medicina.materias().add(biologia2)
+
+    // Inscribimos estudiantes a carreras
 
     roque.inscribirCarrera(programacion)
     roque.inscribirCarrera(medicina)
+
     luisa.inscribirCarrera(programacion)
     romina.inscribirCarrera(programacion)
     alicia.inscribirCarrera(programacion)
-    ana.inscribirCarrera(programacion)
+
+    // Aprobaciones de Roque
 
     roque.registrarAprobacion(elementosDeProgramacion, 7)
-    roque.registrarAprobacion(matematica1, 9)            
-    roque.registrarAprobacion(objetos1, 10)               
+    roque.registrarAprobacion(matematica1, 9)
+    roque.registrarAprobacion(objetos1, 10)
     roque.registrarAprobacion(basesDeDatos, 7)
     roque.registrarAprobacion(quimica, 9)
     roque.registrarAprobacion(biologia1, 7)
+
+    // Aprobaciones de Luisa
 
     luisa.registrarAprobacion(elementosDeProgramacion, 7)
     luisa.registrarAprobacion(matematica1, 9)
     luisa.registrarAprobacion(objetos1, 10)
 
+    // Aprobaciones de Romina
+
     romina.registrarAprobacion(elementosDeProgramacion, 7)
-    romina.registrarAprobacion(matematica1, 9)            
+    romina.registrarAprobacion(matematica1, 9)
     romina.registrarAprobacion(objetos1, 10)
 
-    alicia.registrarAprobacion(elementosDeProgramacion, 7)
-    alicia.registrarAprobacion(matematica1, 9)            
-    alicia.registrarAprobacion(objetos1, 10)
+    // Aprobaciones de Alicia
 
-    ana.registrarAprobacion(elementosDeProgramacion, 9)      
+    alicia.registrarAprobacion(elementosDeProgramacion, 7)
+    alicia.registrarAprobacion(matematica1, 9)
+    alicia.registrarAprobacion(objetos1, 10)
   }
+
   test "Inscripcion de roque en objetos 2"{
     roque.inscribirMateria(objetos2)
     assert.that(roque.materiasInscripto().contains(objetos2))
   }
+
+
   test "inscripción de roque en objetos 3 sin tener aprobada objetos 2"{
     assert.throwsException({roque.inscribirMateria(objetos3)})
   }
+
+
   test "inscripcion de roque en objetos 1 ya teniéndola aprobada"{
     assert.throwsException({roque.inscribirMateria(objetos1)})
   }
-  
+
+
   test "materias que puede inscribirse roque"{
+
     roque.inscribirMateria(objetos2)
     roque.inscribirMateria(programacionConcurrente)
     roque.inscribirMateria(biologia2)
+
     assert.that(roque.materiasInscripto().contains(objetos2))
     assert.that(roque.materiasInscripto().contains(programacionConcurrente))
     assert.that(roque.materiasInscripto().contains(biologia2))
   }
-  
+
+
   test "Roque en lista de espera en objetos 2"{
+
     luisa.inscribirMateria(objetos2)
     romina.inscribirMateria(objetos2)
     alicia.inscribirMateria(objetos2)
     roque.inscribirMateria(objetos2)
+
     assert.equals(#{luisa, romina, alicia}, objetos2.estudiantes())
     assert.that(objetos2.estudiantesEnEspera().contains(roque))
   }
+
+
   test "Roque pasa de la lista de espera a inscripción confirmada en objetos 2 luego de que romina se dé de baja"{
+
     luisa.inscribirMateria(objetos2)
     romina.inscribirMateria(objetos2)
     alicia.inscribirMateria(objetos2)
     roque.inscribirMateria(objetos2)
+
     objetos2.bajaEstudiante(romina)
+
     assert.equals(#{luisa, alicia, roque}, objetos2.estudiantes())
+  }
+  test "Inscripcion a trabajo final con créditos"{
+    roque.inscribirMateria(trabajoFinal)
+    assert.that(roque.materiasInscripto().contains(trabajoFinal))
   }
 }

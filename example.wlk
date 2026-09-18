@@ -1,32 +1,64 @@
-object programacion {
-  const materias = #{elementosDeProgramacion ,matematica1, objetos1 ,objetos2 ,objetos3 ,trabajoFinal, basesDeDatos, programacionConcurrente}
+object creditos {
+
+
+  method requerimiento(estudiante, materia, carrera){
+    return estudiante.aprobaciones().sum({materiaActual => materiaActual.creditos()}) >= materia.creditosNecesarios()
+  }
+}
+class Correlativa {
+
+  const property correlativas = #{}
+
+  method requerimiento(estudiante, materia, carrera) {
+    return correlativas.all({correlativa => estudiante.tieneAprobado(correlativa)})
+  }
+}
+
+object anio {
+
+  method requerimiento (estudiante, materia, carrera){
+    return self.materiasAprobadasDelAnioAnterior(estudiante, materia) == self.totalDeMateriasDelAnioAnterior(carrera, materia)
+  }
+
+  method materiasAprobadasDelAnioAnterior(estudiante, materia){
+    return estudiante.aprobaciones().filter({materiaActual => materiaActual.anio() == materia.anio() - 1}).size()
+  }
+
+  method totalDeMateriasDelAnioAnterior(carrera, materia){
+    return carrera.materias().filter({materiaActual => materiaActual.anio() == materia.anio() - 1}).size()
+  }
+}
+
+object nada {
+  method requerimiento(estudiante, materia, carrera) {
+    return true
+  }
+}
+
+
+class Carrera {
+  const materias
 
   method materias(){
     return materias
   }
 }
-object medicina {
-  const materias = #{quimica ,biologia1, biologia2, anatomiaGeneral}
 
-  method materias(){
-    return materias
-  }
-}
-object derecho {
-  const materias = #{latin, derechoRomano, historiaDerechoArgentino, derechoPenal1, derechoPenal2}
-  
-  method materias(){
-    return materias
-  }
-}
 
 class Materia {
+
   const carrera
-  const property requisitos          = #{}
+  var property requisito        
   var property capacidad
+  const anio
+  var property creditos
+  var property creditosNecesarios
   const property estudiantes         = #{}
   const property estudiantesEnEspera = []
   
+  method anio(){
+    return anio
+  }
   
   method validarInscripcion(estudiante){
     self.validarMateriaEnCarrera(estudiante)
@@ -48,7 +80,7 @@ class Materia {
   }
 
   method validarMateriaEnRequisitos(estudiante){
-    if(not self.requisitos().all({requisito => estudiante.tieneAprobado(requisito)})){
+    if(not self.requisito().requerimiento(estudiante, self, carrera)){
       self.error("No cuentas con todos los requisitos de la materia para inscribir")
     }
   }
@@ -66,6 +98,7 @@ class Materia {
   method bajaEstudiante(estudiante){
     self.validarBaja(estudiante)
     estudiantes.remove(estudiante)
+    estudiante.materiasInscripto().remove(self)
     self.obtenerLugarEnMateria()
   }
 
@@ -85,6 +118,10 @@ class Materia {
 
   method tieneCupo(){
     return estudiantes.size() < capacidad
+  }
+
+  method puedeInscribirse(estudiante){
+    return estudiante.materias().contains(self) and not estudiante.materiasInscripto().contains(self) and not estudiante.tieneAprobado(self) and self.requisito().requerimiento(estudiante, self, carrera)
   }
 }
 
@@ -158,9 +195,9 @@ class Estudiante {
     return self.materias().filter({materia => materia.estudiantesEnEspera().contains(self)})
   }
   /*1. Más información sobre une estudiante: dada una carrera, conocer todas las materias de esa carrera a las que se puede inscribir. Sólo vale si el estudiante está cursando esa carrera.*/
-  method materiasConCupos(carrera){
+  method materias(carrera){
     self.validarCarrera(carrera)
-    return carrera.materias().filter({materia => materia.tieneCupo()})
+    return carrera.materias().filter({materia => materia.puedeInscribirse(self)})
   }
   
   method validarCarrera(carrera){
@@ -169,35 +206,3 @@ class Estudiante {
     }
   }
 }
-
-//Instanciamos a roque y otrxs
-var roque   = new Estudiante()
-var daniela = new Estudiante()
-
-var luisa  = new Estudiante()
-var romina = new Estudiante()
-var alicia = new Estudiante()
-var ana    = new Estudiante()
-
-//PROGRAMACION
-var elementosDeProgramacion = new Materia(carrera = programacion, capacidad = 40)
-var matematica1             = new Materia(carrera = programacion, capacidad = 1) /*capacidad 1 para testear*/
-var objetos1                = new Materia(carrera = programacion, capacidad = 1)
-var objetos2                = new Materia(carrera = programacion, capacidad = 3)
-var objetos3                = new Materia(carrera = programacion, capacidad = 10)
-var trabajoFinal            = new Materia(carrera = programacion, capacidad = 5)
-var basesDeDatos            = new Materia(carrera = programacion, capacidad = 30)
-var programacionConcurrente = new Materia(carrera = programacion, capacidad = 15)
-
-//MEDICINA
-var quimica         = new Materia(carrera = medicina, capacidad = 15)
-var biologia1       = new Materia(carrera = medicina, capacidad = 15)
-var biologia2       = new Materia(carrera = medicina, capacidad = 15)
-var anatomiaGeneral = new Materia(carrera = medicina, capacidad = 15)
-
-//DERECHO
-var latin                    = new Materia(carrera = derecho, capacidad = 15)
-var derechoRomano            = new Materia(carrera = derecho, capacidad = 15)
-var historiaDerechoArgentino = new Materia(carrera = derecho, capacidad = 35)
-var derechoPenal1            = new Materia(carrera = derecho, capacidad = 20)
-var derechoPenal2            = new Materia(carrera = derecho, capacidad = 20)

@@ -70,7 +70,7 @@ Realizar estos tests:
 ## Bonus
 ### Distintos tipos de requisitos
 Contemplar que no todas las materias ponen a otras materias como requisitos. Otras opciones son:
-   * Una cantidad de créditos: por ejemplo para hacer el Trabajo Final se necesita acumular 250 créditos previamente. Para esto agregar a cada materia la cantidad de_créditos_ que otorga, que es un número. 
+   * Una cantidad de créditos: por ejemplo para hacer el Trabajo Final se necesita acumular 250 créditos previamente. Para esto agregar a cada materia la cantidad de_créditos_ que otorga, que es un número.
    * Por año, es decir, haber aprobado todas las materias del año anterior. Por ejemplo, para cursar Objetos 3, que es una materia de tercer año, es necesario haber aprobado todas las materias del segundo año. Para esto es necesario agregar a cada materia a qué año pertence.
    * Nada: Hay materias que no tienen ningún requerimiento, por ejemplo Elementos de Programación es una de las primeras materias y por lo tanto no tiene ninguna condición especial, cualquiera puede cursarla.
 
