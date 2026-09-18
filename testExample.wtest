@@ -1,3 +1,4 @@
+
 import example.*
 
 describe "tests solicitados en los enunciados del readme de inscripcion a materias"{
@@ -12,36 +13,143 @@ describe "tests solicitados en los enunciados del readme de inscripcion a materi
 
   // PROGRAMACIÓN
 
-  var elementosDeProgramacion = new Materia(carrera = programacion, requisito = nada, capacidad = 40, anio = 2023, creditos = 10, creditosNecesarios = 0)
-  var matematica1             = new Materia(carrera = programacion, requisito = nada, capacidad = 40, anio = 2024, creditos = 15, creditosNecesarios = 0)
-  var objetos1                = new Materia(carrera = programacion, requisito = nada, capacidad = 40, anio = 2024, creditos = 20, creditosNecesarios = 0)
-  var objetos2                = new Materia(carrera = programacion, requisito = correlativasObjs2, capacidad = 3, anio = 2025, creditos = 15, creditosNecesarios = 0)
-  var objetos3                = new Materia(carrera = programacion, requisito = correlativasObjs3, capacidad = 10, anio = 2026, creditos = 10, creditosNecesarios = 0)
-  var basesDeDatos            = new Materia(carrera = programacion, requisito = nada, capacidad = 30, anio = 2024, creditos = 15, creditosNecesarios = 0)
-  var programacionConcurrente = new Materia(carrera = programacion, requisito = correlativasProgramacionConcurrente, capacidad = 15, anio = 2025, creditos = 15, creditosNecesarios = 0)
-  var trabajoFinal            = new Materia(carrera = programacion, requisito = creditos, capacidad = 15, anio = 2026, creditos = 15, creditosNecesarios = 50)
-  
+  var elementosDeProgramacion = new Materia(
+    carrera = programacion,
+    requisito = nada,
+    capacidad = 40,
+    anio = 2023,
+    creditos = 10,
+    creditosNecesarios = 0,
+    estrategiaDeEspera = porOrdenDeLlegada
+  )
+
+  var matematica1 = new Materia(
+    carrera = programacion,
+    requisito = nada,
+    capacidad = 40,
+    anio = 2024,
+    creditos = 15,
+    creditosNecesarios = 0,
+    estrategiaDeEspera = elitista
+  )
+
+  var objetos1 = new Materia(
+    carrera = programacion,
+    requisito = nada,
+    capacidad = 40,
+    anio = 2024,
+    creditos = 20,
+    creditosNecesarios = 0,
+    estrategiaDeEspera = gradoDeAvance
+  )
+
+  var objetos2 = new Materia(
+    carrera = programacion,
+    requisito = correlativasObjs2,
+    capacidad = 3,
+    anio = 2025,
+    creditos = 15,
+    creditosNecesarios = 0,
+    estrategiaDeEspera = porOrdenDeLlegada
+  )
+
+  var objetos3 = new Materia(
+    carrera = programacion,
+    requisito = correlativasObjs3,
+    capacidad = 10,
+    anio = 2026,
+    creditos = 10,
+    creditosNecesarios = 0,
+    estrategiaDeEspera = elitista
+  )
+
+  var basesDeDatos = new Materia(
+    carrera = programacion,
+    requisito = nada,
+    capacidad = 30,
+    anio = 2024,
+    creditos = 15,
+    creditosNecesarios = 0,
+    estrategiaDeEspera = gradoDeAvance
+  )
+
+  var programacionConcurrente = new Materia(
+    carrera = programacion,
+    requisito = correlativasProgramacionConcurrente,
+    capacidad = 15,
+    anio = 2025,
+    creditos = 15,
+    creditosNecesarios = 0,
+    estrategiaDeEspera = porOrdenDeLlegada
+  )
+
+  var trabajoFinal = new Materia(
+    carrera = programacion,
+    requisito = creditos,
+    capacidad = 15,
+    anio = 2026,
+    creditos = 15,
+    creditosNecesarios = 50,
+    estrategiaDeEspera = elitista
+  )
+
   // MEDICINA
 
-  var quimica   = new Materia(carrera = medicina, requisito = nada, capacidad = 15, anio = 2023, creditos = 10, creditosNecesarios = 0)
-  var biologia1 = new Materia(carrera = medicina, requisito = nada, capacidad = 15, anio = 2024, creditos = 15, creditosNecesarios = 0)
-  var biologia2 = new Materia(carrera = medicina, requisito = correlativasBiologia2, capacidad = 15, anio = 2025, creditos = 20, creditosNecesarios = 0)
+  var quimica = new Materia(
+    carrera = medicina,
+    requisito = nada,
+    capacidad = 15,
+    anio = 2023,
+    creditos = 10,
+    creditosNecesarios = 0,
+    estrategiaDeEspera = porOrdenDeLlegada
+  )
+
+  var biologia1 = new Materia(
+    carrera = medicina,
+    requisito = nada,
+    capacidad = 15,
+    anio = 2024,
+    creditos = 15,
+    creditosNecesarios = 0,
+    estrategiaDeEspera = gradoDeAvance
+  )
+
+  var biologia2 = new Materia(
+    carrera = medicina,
+    requisito = correlativasBiologia2,
+    capacidad = 15,
+    anio = 2025,
+    creditos = 20,
+    creditosNecesarios = 0,
+    estrategiaDeEspera = elitista
+  )
 
   // CORRELATIVAS
 
-  var correlativasObjs2                   = new Correlativa(correlativas = #{matematica1, objetos1})
-  var correlativasObjs3                   = new Correlativa(correlativas = #{objetos2, basesDeDatos})
-  var correlativasProgramacionConcurrente = new Correlativa(correlativas = #{objetos1, basesDeDatos})
-  var correlativasBiologia2               = new Correlativa(correlativas = #{biologia1})
+  var correlativasObjs2 =
+    new Correlativa(correlativas = #{matematica1, objetos1})
+
+  var correlativasObjs3 =
+    new Correlativa(correlativas = #{objetos2, basesDeDatos})
+
+  var correlativasProgramacionConcurrente =
+    new Correlativa(correlativas = #{objetos1, basesDeDatos})
+
+  var correlativasBiologia2 =
+    new Correlativa(correlativas = #{biologia1})
 
   method initialize(){
+
     // Configuramos los requisitos
+
     objetos2.requisito(correlativasObjs2)
     objetos3.requisito(correlativasObjs3)
     programacionConcurrente.requisito(correlativasProgramacionConcurrente)
     biologia2.requisito(correlativasBiologia2)
 
     // Cargamos materias en las carreras
+
     programacion.materias().add(elementosDeProgramacion)
     programacion.materias().add(matematica1)
     programacion.materias().add(objetos1)
@@ -93,20 +201,21 @@ describe "tests solicitados en los enunciados del readme de inscripcion a materi
   }
 
   test "Inscripcion de roque en objetos 2"{
+
     roque.inscribirMateria(objetos2)
+
     assert.that(roque.materiasInscripto().contains(objetos2))
   }
 
-
   test "inscripción de roque en objetos 3 sin tener aprobada objetos 2"{
+
     assert.throwsException({roque.inscribirMateria(objetos3)})
   }
 
-
   test "inscripcion de roque en objetos 1 ya teniéndola aprobada"{
+
     assert.throwsException({roque.inscribirMateria(objetos1)})
   }
-
 
   test "materias que puede inscribirse roque"{
 
@@ -119,7 +228,6 @@ describe "tests solicitados en los enunciados del readme de inscripcion a materi
     assert.that(roque.materiasInscripto().contains(biologia2))
   }
 
-
   test "Roque en lista de espera en objetos 2"{
 
     luisa.inscribirMateria(objetos2)
@@ -130,7 +238,6 @@ describe "tests solicitados en los enunciados del readme de inscripcion a materi
     assert.equals(#{luisa, romina, alicia}, objetos2.estudiantes())
     assert.that(objetos2.estudiantesEnEspera().contains(roque))
   }
-
 
   test "Roque pasa de la lista de espera a inscripción confirmada en objetos 2 luego de que romina se dé de baja"{
 
@@ -143,8 +250,12 @@ describe "tests solicitados en los enunciados del readme de inscripcion a materi
 
     assert.equals(#{luisa, alicia, roque}, objetos2.estudiantes())
   }
+
   test "Inscripcion a trabajo final con créditos"{
+
     roque.inscribirMateria(trabajoFinal)
+
     assert.that(roque.materiasInscripto().contains(trabajoFinal))
   }
+
 }

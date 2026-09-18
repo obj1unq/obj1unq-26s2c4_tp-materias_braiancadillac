@@ -1,3 +1,27 @@
+object porOrdenDeLlegada {
+
+  method prioritario(estudiantesEnEspera) {
+    return estudiantesEnEspera.head()
+  }
+
+}
+
+object elitista {
+
+  method prioritario(estudiantesEnEspera) {
+    return estudiantesEnEspera.max({estudiante => estudiante.promedio()})
+  }
+
+}
+
+object gradoDeAvance {
+
+  method prioritario(estudiantesEnEspera) {
+    return estudiantesEnEspera.max({estudiante => estudiante.cantidadMateriasAprobadas()})
+  }
+
+}
+
 object creditos {
 
 
@@ -55,6 +79,7 @@ class Materia {
   var property creditosNecesarios
   const property estudiantes         = #{}
   const property estudiantesEnEspera = []
+  const estrategiaDeEspera
   
   method anio(){
     return anio
@@ -109,12 +134,13 @@ class Materia {
   }
 
   method obtenerLugarEnMateria(){
-    if(estudiantesEnEspera.size() > 0){
-      estudiantes.add(estudiantesEnEspera.head())
-      estudiantesEnEspera.head().materiasInscripto().add(self)
-      estudiantesEnEspera.remove(estudiantesEnEspera.head())
-    }
+  if(estudiantesEnEspera.size() > 0){
+    var estudiante = estrategiaDeEspera.prioritario(estudiantesEnEspera)
+    estudiantes.add(estudiante)
+    estudiante.materiasInscripto().add(self)
+    estudiantesEnEspera.remove(estudiante)
   }
+}
 
   method tieneCupo(){
     return estudiantes.size() < capacidad
